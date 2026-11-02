@@ -1,0 +1,943 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lecture 16 · State Management 2: Provider</title>
+  <meta name="description" content="Mobile App Development with Flutter, Lecture 16: Share state across screens with the provider package: write a ChangeNotifier, provide it above MaterialApp, read it with Consumer and context.watch, and change it with context.read.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Sora:wght@600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="flutter-logo" viewBox="0 0 166 210">
+    <path fill="#44D1FD" d="M10 101 100 11h56L38 129z"/>
+    <path fill="#1FBCFD" d="M51 150 100 102h56l-77 76z"/>
+    <path fill="#08589C" d="M79 178 107 150l49 49h-56z"/>
+  </symbol>
+  <symbol id="i-git" viewBox="0 0 24 24"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="6" r="3"/><path d="M6 3v12"/><path d="M18 9a9 9 0 0 1-9 9"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2.5"/><path d="M11 18h2"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><path d="M12 15V3"/></symbol>
+  <symbol id="i-windows" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></symbol>
+  <symbol id="i-laptop" viewBox="0 0 24 24"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9"/><path d="M2 19.5 4 16h16l2 3.5a1 1 0 0 1-.9 1.5H2.9a1 1 0 0 1-.9-1.5z"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/><path d="M5 3v4M3 5h4M19 17v4M17 19h4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></symbol>
+  <symbol id="i-disk" viewBox="0 0 24 24"><path d="M22 12H2"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.8 4H7.2a2 2 0 0 0-1.7 1.1z"/><path d="M6 16h.01M10 16h.01"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M5 12.6a11 11 0 0 1 14 0"/><path d="M1.4 9a16 16 0 0 1 21.2 0"/><path d="M8.5 16.1a6 6 0 0 1 7 0"/><path d="M12 20h.01"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3z"/><path d="M12 9v4M12 17h.01"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9l-.8-1.2A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></symbol>
+  <symbol id="i-package" viewBox="0 0 24 24"><path d="m7.5 4.3 9 5.1"/><path d="M21 8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><path d="M12 19h8"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+  <symbol id="i-mouse" viewBox="0 0 24 24"><path d="m4 4 7 17 2.5-7.5L21 11z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-chrome" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M21.2 8H12M3.9 6.1 8.5 14M10.9 21.9l4.6-7.9"/></symbol>
+  <symbol id="i-cable" viewBox="0 0 24 24"><path d="M17 21v-2a1 1 0 0 1-1-1v-1a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1v2"/><path d="M19 15V6.5a3.5 3.5 0 0 0-7 0v11a3.5 3.5 0 0 1-7 0V9"/><path d="M3 9V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4z"/></symbol>
+  <symbol id="i-apple" viewBox="0 0 24 24"><path d="M12 7c-1.5-1.3-4.5-1.6-6 .5-1.6 2.3-1 6.6 1.3 9.9 1 1.4 2 2.6 3.2 2.5.9 0 1.2-.6 1.5-.6s.6.6 1.5.6c1.2.1 2.2-1.1 3.2-2.5 2.3-3.3 2.9-7.6 1.3-9.9-1.5-2.1-4.5-1.8-6-.5z"/><path d="M12 7c0-2 1-3.5 3-4"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 22a10 10 0 1 1 10-10c0 2.8-2.2 4-4 4h-2a2 2 0 0 0-1.5 3.3c.5.6.3 1.7-.5 2.2-.6.3-1.3.5-2 .5z"/><circle cx="7.5" cy="10.5" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16.5" cy="10.5" r="1"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></symbol>
+  <symbol id="i-map-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/><path d="m15 5 4 4"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9c2.5 0 4.9 1 6.7 2.7L21 8"/><path d="M21 3v5h-5"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></symbol>
+  <symbol id="i-plus-one" viewBox="0 0 24 24"><path d="M2.5 12h7M6 8.5v7"/><path d="M14 8.5 17 6v12"/><path d="M14 18h6"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></symbol>
+  <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2 2h3l2.7 12.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></symbol>
+  <symbol id="i-type" viewBox="0 0 24 24"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+</svg>
+
+<div class="progress" aria-hidden="true"><span></span></div>
+
+<main class="deck">
+
+<!-- 01 · Title -->
+<section class="slide">
+  <div class="canvas"><div class="frame frame--title">
+    <div class="stagger">
+      <p class="kicker">Lecture 16 · Mobile App Development</p>
+      <h1 class="hero">State Management 2:<br><span class="grad-text">Provider</span></h1>
+      <p class="lead lead--hero">One place for your data, the Flutter way.</p>
+      <div class="chips">
+        <span class="chip"><span class="avatar">MI</span>Eng. Monther Ibrahim</span>
+        <span class="chip"><span class="avatar">M</span>Muhammad, M.Sc.</span>
+        <span class="chip">Fall 2026</span>
+      </div>
+      <p class="keys"><kbd>→</kbd> next &nbsp;·&nbsp; <kbd>F</kbd> fullscreen &nbsp;·&nbsp; <kbd>N</kbd> notes &nbsp;·&nbsp; <kbd>T</kbd> theme</p>
+    </div>
+    <div class="title-right" aria-hidden="true" style="display:grid; place-items:center;">
+      <div class="logo-glow" style="left:16%; top:4%;"></div>
+      <div class="wt">
+        <ul><li><span class="nd nd--prov" style="font-size:1.45cqw; padding:.8cqw 2cqw;">Providers<small style="font-size:.9cqw;">Counter · Profile · Theme</small></span>
+          <ul>
+            <li>
+              <div class="ph" style="--pw:9.4cqw;">
+                <div class="ph__scr" style="background:#F4FBF8; color:#161D1C; --ab:#F4FBF8; --abf:#161D1C; --ic:#3F4947;"><div class="ph__island"></div>
+                  <div class="appbar"><span>Hello, Ali</span><span style="flex:1;"></span><svg class="ico ico-m"><use href="#i-moon"/></svg></div>
+                  <div class="m-tile"><svg class="ico ico-m"><use href="#i-plus-one"/></svg><div><div class="t">Counter</div><div class="s">Pressed 3 times</div></div></div>
+                  <div class="m-tile"><svg class="ico ico-m"><use href="#i-user"/></svg><div><div class="t">Profile</div><div class="s">Ali</div></div></div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="ph" style="--pw:9.4cqw;">
+                <div class="ph__scr" style="background:#F4FBF8; color:#161D1C; --ab:#F4FBF8; --abf:#161D1C; --ic:#3F4947;"><div class="ph__island"></div>
+                  <div class="appbar"><svg class="ico ico-m"><use href="#i-arrow-left"/></svg><span>Counter</span><span style="flex:1;"></span><svg class="ico ico-m"><use href="#i-refresh"/></svg></div>
+                  <div class="pbody"><span class="m-count">3</span></div>
+                  <div class="m-fab"><svg class="ico"><use href="#i-plus"/></svg></div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="ph" style="--pw:9.4cqw;">
+                <div class="ph__scr" style="background:#F4FBF8; color:#161D1C; --ab:#F4FBF8; --abf:#161D1C; --ic:#3F4947;"><div class="ph__island"></div>
+                  <div class="appbar"><svg class="ico ico-m"><use href="#i-arrow-left"/></svg><span>Profile: Ali</span></div>
+                  <div class="col" style="padding-top:1.1em;">
+                    <div class="m-field" style="border-color:#6F7977;"><svg class="ico"><use href="#i-user"/></svg>New name</div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </li></ul>
+      </div>
+    </div>
+  </div></div>
+  <aside class="notes"><p>Remind students of the Lecture 15 cliffhanger: <code>ValueNotifier</code> worked for one number, but real apps need classes with many values and rules. That is what Provider gives us.</p><p>The picture: three screens of today's demo app (Home, Counter, Profile), all reading their data from one place, the providers.</p></aside>
+</section>
+
+<!-- 02 · Learning objectives -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Today</p>
+      <h2 class="title">Learning objectives</h2>
+      <p class="lead">We take the Lecture 15 idea (one place for the data) and build it the Flutter way, with the <b>provider</b> package.</p>
+    </header>
+    <div class="body" style="grid-template-rows: 1fr auto;">
+      <div class="journey stagger">
+        <div class="stop"><div class="stop__dot"><svg class="ico"><use href="#i-download"/></svg><span class="stop__n">1</span></div><h3>Install</h3><p>and import <code>provider</code></p></div>
+        <div class="stop"><div class="stop__dot"><svg class="ico"><use href="#i-code"/></svg><span class="stop__n">2</span></div><h3>Write</h3><p>a <code>ChangeNotifier</code> class</p></div>
+        <div class="stop"><div class="stop__dot"><svg class="ico"><use href="#i-layers"/></svg><span class="stop__n">3</span></div><h3>Provide</h3><p>it above <code>MaterialApp</code></p></div>
+        <div class="stop"><div class="stop__dot"><svg class="ico"><use href="#i-eye"/></svg><span class="stop__n">4</span></div><h3>Read</h3><p>with <code>watch</code> / <code>Consumer</code>, change with <code>read</code></p></div>
+        <div class="stop"><div class="stop__dot"><svg class="ico"><use href="#i-share"/></svg><span class="stop__n">5</span></div><h3>Share</h3><p>data between screens and avoid common errors</p></div>
+      </div>
+      <div class="callout callout--ok goal"><svg class="ico"><use href="#i-target"/></svg><div><b>Goal:</b> one app with three small providers (a <b>counter</b>, a <b>profile name</b> and a <b>theme</b>) shared by every screen.</div></div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Today we write three small providers: a counter, a profile name and a theme. The next lecture uses the same tools to build a full shop app.</p></aside>
+</section>
+
+<!-- 03 · From Lecture 15 to Provider -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Why Provider</p>
+      <h2 class="title">From Lecture 15 to Provider: what and why</h2>
+    </header>
+    <div class="body" style="grid-template-columns: 1.1fr .9fr; gap: 3cqw; align-items:start;">
+      <div class="side stagger">
+        <div class="callout callout--info"><svg class="ico"><use href="#i-activity"/></svg><div><b>Lecture 15 idea:</b> one place for the data, widgets listen, only listeners rebuild</div></div>
+        <article class="card card--hl" style="display:grid; grid-template-columns:auto 1fr; gap:1.3cqw; align-items:center;">
+          <span class="itile"><svg class="ico"><use href="#i-package"/></svg></span>
+          <h3 style="font-size:1.8cqw; line-height:1.35;"><b>Provider</b> = a package that does exactly this, in a simple way</h3>
+        </article>
+        <div class="defs">
+          <div class="def"><code>InheritedWidget</code><span>Provider is built on it: Flutter's own way to pass data down the tree</span></div>
+          <div class="def"><code>Flutter docs</code><span>Used on the official page "Simple app state management", and a <b>Flutter Favorite</b> package</span></div>
+        </div>
+      </div>
+      <div class="side">
+        <article class="card" style="display:grid; gap:.7cqw;">
+          <span class="badge" style="justify-self:start;">Lecture 15</span>
+          <h3><code>ValueNotifier</code></h3>
+          <p>holds <b>one</b> value</p>
+          <div class="example-list"><span class="chip"><code>value</code></span></div>
+        </article>
+        <div class="arrow-mid" style="font-size:2.2cqw;"><svg class="ico"><use href="#i-arrow-down"/></svg></div>
+        <article class="card card--hl" style="display:grid; gap:.7cqw;">
+          <span class="badge badge--ok" style="justify-self:start;">Today</span>
+          <h3>a <code>ChangeNotifier</code> class</h3>
+          <p>holds many values <b>and</b> the methods that change them</p>
+          <div class="example-list"><span class="chip"><code>_count</code></span><span class="chip"><code>count</code></span><span class="chip"><code>increment()</code></span><span class="chip"><code>reset()</code></span></div>
+        </article>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>The Flutter docs (docs.flutter.dev/data-and-backend/state-mgmt/simple) say that if you are new to Flutter and have no strong reason to pick another approach, provider is probably the one to start with. You do not need to know <code>InheritedWidget</code>; Provider hides it for you.</p></aside>
+</section>
+
+<!-- 04 · The three pieces -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">The big picture</p>
+      <h2 class="title">The three pieces</h2>
+    </header>
+    <div class="body pieces">
+      <article class="card piece">
+        <span class="itile"><svg class="ico"><use href="#i-package"/></svg></span>
+        <div><h3><code>CounterProvider</code><small>(extends ChangeNotifier)</small></h3><p>the data + the methods, calls <code>notifyListeners()</code></p></div>
+        <span class="path">lib/counter_provider.dart</span>
+      </article>
+      <div class="piece-link"><span></span><svg class="ico"><use href="#i-arrow-down"/></svg><span>created by</span></div>
+      <article class="card piece">
+        <span class="itile"><svg class="ico"><use href="#i-layers"/></svg></span>
+        <div><h3><code>ChangeNotifierProvider</code><small>(in main.dart, above MaterialApp)</small></h3><p>puts it into the widget tree</p></div>
+        <span class="path">lib/main.dart</span>
+      </article>
+      <div class="piece-link"><span></span><svg class="ico"><use href="#i-arrow-down"/></svg><span>found by any widget below</span></div>
+      <div class="piece-pair">
+        <article class="card piece">
+          <span class="itile"><svg class="ico"><use href="#i-eye"/></svg></span>
+          <div><h3><code>Consumer</code> / <code>context.watch</code></h3><p>listen and rebuild</p></div>
+        </article>
+        <article class="card piece">
+          <span class="itile" style="background:rgba(255,200,87,.14); color:var(--warm);"><svg class="ico"><use href="#i-pencil"/></svg></span>
+          <div><h3><code>context.read</code></h3><p>use it in <code>onPressed</code>, no rebuild</p></div>
+        </article>
+      </div>
+      <div class="callout callout--info" style="width:70cqw; margin-top:2cqw;"><svg class="ico"><use href="#i-bulb"/></svg><div>Every code slide today is one of these three boxes.</div></div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Keep this picture visible (or redraw it on the board) for the whole lecture. Every code slide is one of these three boxes.</p></aside>
+</section>
+
+<!-- 05 · Install provider -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Setup</p>
+      <h2 class="title">Install <code>provider</code></h2>
+    </header>
+    <div class="body walk" style="grid-template-columns: 1.1fr .9fr;">
+      <div class="side">
+        <div class="term"><div class="term__bar"><i></i><i></i><i></i><span>Terminal</span><span class="grow"></span><span>in your app folder</span></div><pre style="font-size:1.35cqw;"><span class="t-p">$</span> flutter pub add provider</pre></div>
+        <div class="term code code--lg">
+          <div class="term__bar"><i></i><i></i><i></i><span>pubspec.yaml</span></div>
+<pre class="hl" data-lang="yaml" data-hl="3"># pubspec.yaml (added for you)
+dependencies:
+  provider: ^6.1.5+1</pre>
+        </div>
+        <div class="term code code--lg">
+          <div class="term__bar"><i></i><i></i><i></i><span>at the top of every file that uses it</span></div>
+<pre class="hl">import 'package:provider/provider.dart';</pre>
+        </div>
+      </div>
+      <div class="explain stagger">
+        <ol class="steps bigsteps">
+          <li><span><b>Run</b> the command in your app folder</span></li>
+          <li><span>It <b>adds one line</b> to <code>pubspec.yaml</code> for you</span></li>
+          <li><span><b>Import</b> it in every file that uses it</span></li>
+        </ol>
+        <div class="callout callout--ok"><svg class="ico"><use href="#i-check-circle"/></svg><div>One command, one import, nothing to configure</div></div>
+        <div class="callout callout--warn"><svg class="ico"><use href="#i-alert"/></svg><div>After adding a package: <b>stop and run again</b> (or hot restart)</div></div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Run the command live in the VS Code terminal and show the new line in <code>pubspec.yaml</code>. If students see "Target of URI doesn't exist: 'package:provider/provider.dart'", they skipped the command or ran it in the wrong folder.</p><p>No Android or iOS files change.</p></aside>
+</section>
+
+<!-- 06 · ChangeNotifier: CounterProvider -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Piece 1 · The data</p>
+      <h2 class="title"><code>ChangeNotifier</code>: our <code>CounterProvider</code></h2>
+    </header>
+    <div class="body walk" style="grid-template-columns: 1.15fr .85fr;">
+      <div class="term code">
+        <div class="term__bar"><i></i><i></i><i></i><span>lib/counter_provider.dart</span></div>
+<pre class="hl" data-groups="3:g1;4:g2;6:g3;10:g4">import 'package:flutter/foundation.dart';
+
+class CounterProvider extends ChangeNotifier {
+  int _count = 0; // private: only this class can change it
+
+  int get count =&gt; _count; // public, read-only
+
+  void increment() {
+    _count++;
+    notifyListeners(); // tell every listening widget to rebuild
+  }
+
+  // reset() works the same way: _count = 0; notifyListeners();
+}</pre>
+      </div>
+      <div class="explain">
+        <div class="legend-groups stagger">
+          <div class="lg" style="--c:#13B9FD;"><span class="n">1</span><b><code>extends ChangeNotifier</code></b><span>our class can notify listeners</span></div>
+          <div class="lg" style="--c:#FFC857;"><span class="n">2</span><b><code>_count</code> starts with <code>_</code></b><span>private to this file</span></div>
+          <div class="lg" style="--c:#4ADE80;"><span class="n">3</span><b><code>get count</code></b><span>a <b>getter</b>, a read-only window to <code>_count</code></span></div>
+          <div class="lg" style="--c:#C792EA;"><span class="n">4</span><b><code>notifyListeners()</code></b><span>The rule: change the data, then call it</span></div>
+        </div>
+        <div class="callout callout--info"><svg class="ico"><use href="#i-info"/></svg><div>No widgets here: it imports <code>foundation.dart</code>, not <code>material.dart</code>. Plain Dart logic.</div></div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>No widgets in this file: it imports <code>foundation.dart</code>, not <code>material.dart</code>. This is plain Dart logic. Rule: change the data, then call <code>notifyListeners()</code>.</p><p>The full file also has <code>reset()</code>: <code>_count = 0;</code> then <code>notifyListeners();</code>.</p></aside>
+</section>
+
+<!-- 07 · ChangeNotifierProvider above MaterialApp -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Piece 2 · Provide it</p>
+      <h2 class="title"><code>ChangeNotifierProvider</code> above <code>MaterialApp</code></h2>
+    </header>
+    <div class="body" style="grid-template-columns: auto 1fr; gap: 2.4cqw; align-items:start;">
+      <div class="side" style="max-width:38cqw;">
+        <div class="term code">
+          <div class="term__bar"><i></i><i></i><i></i><span>lib/main.dart</span></div>
+<pre class="hl" data-hl="3-6">void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) =&gt; CounterProvider(),
+      child: const MyApp(),
+    ),
+  );
+}</pre>
+        </div>
+        <div class="defs stagger">
+          <div class="def"><code>create</code><span>makes the object <b>once</b> (the first time a widget asks for it)</span></div>
+          <div class="def"><code>dispose</code><span>Provider also cleans it up (calls <code>dispose</code>) when it is removed</span></div>
+        </div>
+        <div class="callout callout--info"><svg class="ico"><use href="#i-layers"/></svg><div>Above <code>MyApp</code> → above <code>MaterialApp</code> → every screen can find it</div></div>
+      </div>
+      <div class="side">
+        <div class="card" style="display:grid; justify-items:center; gap:1.2cqw; padding:1.6cqw 1.2cqw 1.3cqw;">
+          <div class="wt">
+            <ul><li><span class="nd nd--prov">ChangeNotifierProvider<small>create: CounterProvider()</small></span>
+              <ul><li><span class="nd">MyApp</span>
+                <ul><li><span class="nd">MaterialApp</span>
+                  <ul>
+                    <li><span class="nd nd--hl">CounterPage<small>home · listens (watch)</small></span></li>
+                    <li><span class="nd nd--dash"><span class="t-body">any page you push</span><small>Navigator.push · finds it too</small></span></li>
+                  </ul>
+                </li></ul>
+              </li></ul>
+            </li></ul>
+          </div>
+          <p class="ph-cap" style="margin-top:0;"><b style="color:var(--sky);">Blue</b> = listens: rebuilds when <code>notifyListeners()</code> runs. <code>MyApp</code> and <code>MaterialApp</code> don't.</p>
+        </div>
+        <div class="callout callout--warn"><svg class="ico"><use href="#i-alert"/></svg><div>A widget can only find providers that are <b>above</b> it</div></div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Draw the tree: <code>ChangeNotifierProvider</code> → <code>MyApp</code> → <code>MaterialApp</code> → every page you push. Because pushed pages live inside <code>MaterialApp</code>, they all see the provider. This is what fixes the "stale cart page" from Lecture 15.</p></aside>
+</section>
+
+<!-- 08 · Reading with Consumer -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Piece 3 · Read it</p>
+      <h2 class="title">Reading with <code>Consumer&lt;T&gt;</code></h2>
+    </header>
+    <div class="body" style="grid-template-columns: auto 1fr; gap: 2.4cqw; align-items:start;">
+      <div class="side" style="max-width:37cqw;">
+        <div class="term code">
+          <div class="term__bar"><i></i><i></i><i></i><span>CounterPage · build()</span></div>
+<pre class="hl" data-groups="2:g1;3-8:g2">body: Center(
+  child: Consumer&lt;CounterProvider&gt;(
+    builder: (context, counter, child) {
+      return Text(
+        '${counter.count}',
+        style: const TextStyle(fontSize: 64),
+      );
+    },
+  ),
+),</pre>
+        </div>
+        <div class="defs stagger">
+          <div class="def"><code>&lt;CounterProvider&gt;</code><span>which provider to find</span></div>
+          <div class="def"><code>builder</code><span>gets <code>(context, value, child)</code>; here the value is <code>counter</code></span></div>
+        </div>
+      </div>
+      <div class="side">
+        <article class="card" style="padding:1.3cqw 1.5cqw;">
+          <h3 style="font-size:1.35cqw;">Who rebuilds when <code>notifyListeners()</code> runs?</h3>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.2cqw; margin-top:1cqw;">
+            <div style="display:grid; justify-items:center; gap:.9cqw; align-content:start;">
+              <span class="badge badge--warm">Listen in build()</span>
+              <div class="wt wt--sm">
+                <ul><li><span class="nd nd--hl">Scaffold</span>
+                  <ul>
+                    <li><span class="nd nd--hl">AppBar</span></li>
+                    <li><span class="nd nd--hl">Center</span><ul><li><span class="nd nd--hl">Text</span></li></ul></li>
+                    <li><span class="nd nd--hl">FAB</span></li>
+                  </ul>
+                </li></ul>
+              </div>
+              <p class="ph-cap" style="margin-top:0;">the <b>whole page</b></p>
+            </div>
+            <div style="display:grid; justify-items:center; gap:.9cqw; align-content:start;">
+              <span class="badge badge--ok">Consumer</span>
+              <div class="wt wt--sm">
+                <ul><li><span class="nd">Scaffold</span>
+                  <ul>
+                    <li><span class="nd">AppBar</span></li>
+                    <li><span class="nd">Center</span><ul><li><span class="nd nd--hl">Consumer</span><ul><li><span class="nd nd--hl">Text</span></li></ul></li></ul></li>
+                    <li><span class="nd">FAB</span></li>
+                  </ul>
+                </li></ul>
+              </div>
+              <p class="ph-cap" style="margin-top:0;">only the <b>builder</b> part</p>
+            </div>
+          </div>
+        </article>
+        <div class="callout callout--ok"><svg class="ico"><use href="#i-bell"/></svg><div>Only the <code>builder</code> part rebuilds when <code>notifyListeners()</code> runs</div></div>
+        <div class="callout callout--info"><svg class="ico"><use href="#i-bulb"/></svg><div><b><code>child:</code> optimisation:</b> a widget you pass as <code>child</code> is built once and handed back to <code>builder</code>, for parts that never change</div></div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>This is the "Consumer" version of the counter page (complete example, variants). We will use the <code>child</code> trick on the Home page (slide 15).</p><p>In the picture, blue boxes rebuild. Listening in <code>build()</code> (slides 9 and 10) rebuilds the whole page; <code>Consumer</code> rebuilds only what its <code>builder</code> returns.</p></aside>
+</section>
+
+<!-- 09 · Provider.of and listen: false -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Piece 3 · The long form</p>
+      <h2 class="title"><code>Provider.of&lt;T&gt;(context)</code> and <code>listen: false</code></h2>
+    </header>
+    <div class="body" style="grid-template-columns: 1fr auto; gap: 2.4cqw; align-items:start;">
+      <div class="side">
+        <div class="term code code--lg">
+          <div class="term__bar"><i></i><i></i><i></i><span>CounterPage</span></div>
+<pre class="hl" data-groups="1-2:g1;4-7:g2">// In build(): find it AND listen (rebuild on change)
+final counter = Provider.of&lt;CounterProvider&gt;(context);
+
+// In onPressed: find it, but do NOT listen
+onPressed: () {
+  Provider.of&lt;CounterProvider&gt;(context, listen: false).increment();
+},</pre>
+        </div>
+        <div class="legend-groups stagger" style="grid-template-columns: 1fr 1fr;">
+          <div class="lg" style="--c:#13B9FD;"><span class="n">1</span><b>Listen (the default)</b><span><code>listen</code> is <code>true</code> by default: the widget rebuilds on every <code>notifyListeners()</code></span></div>
+          <div class="lg" style="--c:#FFC857;"><span class="n">2</span><b><code>listen: false</code></b><span>In a button we only want to <b>call a method</b>, so we don't listen</span></div>
+        </div>
+        <div class="callout callout--warn"><svg class="ico"><use href="#i-alert"/></svg><div>Forgetting <code>listen: false</code> in <code>onPressed</code> gives an error (slide 18)</div></div>
+        <div class="callout callout--info"><svg class="ico"><use href="#i-book"/></svg><div>The older, longer style: you will see it in many tutorials. Next slide: the short form we use.</div></div>
+      </div>
+      <div class="ph" style="--pw:12.5cqw;">
+        <div class="ph__scr" style="background:#F4FBF8; color:#161D1C; --ab:#F4FBF8; --abf:#161D1C; --ic:#3F4947;"><div class="ph__island"></div>
+          <div class="appbar"><span>Counter</span></div>
+          <div class="pbody"><span class="is-tag" data-tag="listens"><span class="m-count">3</span></span></div>
+          <div class="m-fab is-tag" data-tag="listen: false"><svg class="ico"><use href="#i-plus"/></svg></div>
+        </div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>This is the older, longer style. You will see it in many tutorials and Stack Overflow answers, so students must recognise it. Next slide: the short form we use in this course.</p></aside>
+</section>
+
+<!-- 10 · context.watch and context.read -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Watch or read?</p>
+      <h2 class="title">The short way: <code>context.watch</code> and <code>context.read</code></h2>
+    </header>
+    <div class="body" style="align-content:start; gap:1.6cqw;">
+      <table class="tbl tbl--map">
+        <thead><tr>
+          <th style="width:33%;"><svg class="ico"><use href="#i-zap"/></svg>Short form (we use this)</th>
+          <th style="width:42%;"><svg class="ico"><use href="#i-copy"/></svg>Same as</th>
+          <th><svg class="ico"><use href="#i-target"/></svg>Use it</th>
+        </tr></thead>
+        <tbody>
+          <tr><td><code>context.watch&lt;CounterProvider&gt;()</code></td><td><code>Provider.of&lt;CounterProvider&gt;(context)</code></td><td><svg class="ico"><use href="#i-eye"/></svg>in <code>build()</code>, to <b>show</b> data (rebuilds)</td></tr>
+          <tr><td><code>context.read&lt;CounterProvider&gt;()</code></td><td><code>Provider.of&lt;CounterProvider&gt;(context, listen: false)</code></td><td><svg class="ico" style="color:var(--warm);"><use href="#i-pencil"/></svg>in <code>onPressed</code> / <code>onChanged</code>, to <b>call methods</b></td></tr>
+          <tr><td><code>Consumer&lt;CounterProvider&gt;(builder: ...)</code></td><td><span class="muted">(a widget)</span></td><td><svg class="ico"><use href="#i-layers"/></svg>to rebuild only a <b>small part</b> of a page</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout--ok" style="font-size:1.7cqw; padding:1.3cqw 1.7cqw; align-items:center;"><svg class="ico" style="font-size:2.2cqw;"><use href="#i-check-circle"/></svg><div>Easy rule: <b>watch</b> to show, <b>read</b> to change</div></div>
+      <div class="callout callout--info"><svg class="ico"><use href="#i-info"/></svg><div><code>watch</code> and <code>read</code> come from the same import: <code>package:provider/provider.dart</code></div></div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p><code>watch</code> and <code>read</code> come from the same import, <code>package:provider/provider.dart</code>. Write the rule on the board; we repeat it all lecture.</p></aside>
+</section>
+
+<!-- 11 · Refactor the Lecture 09 counter -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Refactor</p>
+      <h2 class="title">Refactor the Lecture 09 counter: what moves where</h2>
+    </header>
+    <div class="body" style="align-content:start; gap:1.6cqw;">
+      <table class="tbl tbl--map tbl--lg">
+        <thead><tr>
+          <th style="width:38%;"><svg class="ico"><use href="#i-file"/></svg>Lecture 09 (<code>setState</code>)</th>
+          <th class="arr"></th>
+          <th><svg class="ico"><use href="#i-package"/></svg>Lecture 16 (Provider)</th>
+        </tr></thead>
+        <tbody>
+          <tr><td><code>StatefulWidget</code> + <code>State</code> class</td><td class="arr"><svg class="ico"><use href="#i-arrow-right"/></svg></td><td><code>StatelessWidget</code></td></tr>
+          <tr><td><code>int count = 0;</code> inside the <code>State</code></td><td class="arr"><svg class="ico"><use href="#i-arrow-right"/></svg></td><td><code>int _count = 0;</code> inside <code>CounterProvider</code></td></tr>
+          <tr><td><code>setState(() { count++; });</code></td><td class="arr"><svg class="ico"><use href="#i-arrow-right"/></svg></td><td><code>increment()</code>: <code>_count++;</code> then <code>notifyListeners();</code></td></tr>
+          <tr><td><code>Text('$count', ...)</code></td><td class="arr"><svg class="ico"><use href="#i-arrow-right"/></svg></td><td><code>Text('${counter.count}', ...)</code> with <code>context.watch</code></td></tr>
+          <tr><td><code>onPressed: () { setState(...); }</code></td><td class="arr"><svg class="ico"><use href="#i-arrow-right"/></svg></td><td><code>onPressed: () { context.read&lt;CounterProvider&gt;().increment(); }</code></td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout--ok"><svg class="ico"><use href="#i-check-circle"/></svg><div>Nothing is lost: the data and the logic just move <b>out of the page</b> into their own class.</div></div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Open the Lecture 09 counter side by side with the new files. Nothing is lost; the data and the logic just move out of the page into their own class.</p></aside>
+</section>
+
+<!-- 12 · The new CounterPage -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Build it · Counter</p>
+      <h2 class="title">The new <code>CounterPage</code></h2>
+    </header>
+    <div class="body" style="grid-template-columns: 1fr auto; gap: 2.4cqw; align-items:start;">
+      <div class="side">
+        <div class="term code">
+          <div class="term__bar"><i></i><i></i><i></i><span>lib/counter_page.dart</span><span class="grow"></span><span>CounterPage · build()</span></div>
+<pre class="hl" data-groups="1,6:g1;10:g2">final counter = context.watch&lt;CounterProvider&gt;(); // listen
+
+return Scaffold(
+  appBar: AppBar(/* title + reset button, see complete example */),
+  body: Center(
+    child: Text('${counter.count}', style: const TextStyle(fontSize: 64)),
+  ),
+  floatingActionButton: FloatingActionButton(
+    onPressed: () {
+      context.read&lt;CounterProvider&gt;().increment(); // just use
+    },
+    child: const Icon(Icons.add),
+  ),
+);</pre>
+        </div>
+        <div class="stats stagger">
+          <div class="callout callout--ok"><svg class="ico"><use href="#i-check-circle"/></svg><div><code>CounterPage</code> is now a <code>StatelessWidget</code></div></div>
+          <div class="callout callout--info"><svg class="ico"><use href="#i-refresh"/></svg><div>The reset button in the AppBar calls <code>context.read&lt;CounterProvider&gt;().reset()</code></div></div>
+        </div>
+      </div>
+      <div class="ph" style="--pw:12.5cqw;">
+        <div class="ph__scr" style="background:#F4FBF8; color:#161D1C; --ab:#F4FBF8; --abf:#161D1C; --ic:#3F4947;"><div class="ph__island"></div>
+          <div class="appbar"><span>Counter</span><span style="flex:1;"></span><svg class="ico ico-m"><use href="#i-refresh"/></svg></div>
+          <div class="pbody"><span class="is-tag" data-tag="watch"><span class="m-count">3</span></span></div>
+          <div class="m-fab is-tag" data-tag="read"><svg class="ico"><use href="#i-plus"/></svg></div>
+        </div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Live demo with <code>lib/main.dart</code> (step 1 version). Tap + a few times, then hot reload: the count stays, because it lives in the provider. Then show the watch/read experiment from Practical example 2.</p><p>The experiment: (1) in <code>build()</code> change <code>context.watch</code> to <code>context.read</code>, hot reload, tap +: the number does not change on screen (the data changes, but nobody listens). (2) Put it back; in the FAB's <code>onPressed</code> change <code>context.read</code> to <code>context.watch</code>, hot reload, tap +: the Debug Console shows "Tried to listen to a value exposed with provider, from outside of the widget tree." (3) Put it back.</p></aside>
+</section>
+
+<!-- 13 · ProfileProvider -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Share data · The provider</p>
+      <h2 class="title">Sharing data between screens: <code>ProfileProvider</code></h2>
+    </header>
+    <div class="body" style="grid-template-columns: 1fr auto; gap: 3cqw; align-items:start;">
+      <div class="side">
+        <div class="term code">
+          <div class="term__bar"><i></i><i></i><i></i><span>lib/profile_provider.dart</span></div>
+<pre class="hl" data-groups="2:g1;7-8:g2">class ProfileProvider extends ChangeNotifier {
+  String _name = 'Ali';
+
+  String get name =&gt; _name;
+
+  void changeName(String newName) {
+    final trimmed = newName.trim();
+    _name = trimmed.isEmpty ? 'Guest' : trimmed;
+    notifyListeners();
+  }
+}</pre>
+        </div>
+        <ul class="defs stagger">
+          <li class="def"><code>Goal</code><span>Home shows "Hello, Ali"; the Profile page changes the name</span></li>
+          <li class="def"><code>Go back</code><span>Home already shows the new name; no callbacks, no <code>pop</code> result</span></li>
+          <li class="def"><code>The rule</code><span>"empty name → Guest" lives in the provider, not in a widget</span></li>
+        </ul>
+      </div>
+      <div style="display:grid; justify-items:center; gap:.8cqw;">
+        <div class="wt">
+          <ul><li><span class="nd nd--prov">ProfileProvider<small>name: 'Ali'</small></span>
+            <ul>
+              <li>
+                <div class="ph" style="--pw:12.5cqw;">
+                  <div class="ph__scr" style="background:#F4FBF8; color:#161D1C; --ab:#F4FBF8; --abf:#161D1C; --ic:#3F4947;"><div class="ph__island"></div>
+                    <div class="appbar"><span>Hello, <span class="nm">Ali</span></span><span style="flex:1;"></span><svg class="ico ico-m"><use href="#i-moon"/></svg></div>
+                    <div class="m-tile"><svg class="ico ico-m"><use href="#i-plus-one"/></svg><div><div class="t">Counter</div><div class="s">Pressed 3 times</div></div></div>
+                    <div class="m-tile"><svg class="ico ico-m"><use href="#i-user"/></svg><div><div class="t">Profile</div><div class="s"><span class="nm">Ali</span></div></div></div>
+                  </div>
+                </div>
+                <p class="ph-cap"><b>HomePage</b></p>
+              </li>
+              <li>
+                <div class="ph" style="--pw:12.5cqw;">
+                  <div class="ph__scr" style="background:#F4FBF8; color:#161D1C; --ab:#F4FBF8; --abf:#161D1C; --ic:#3F4947;"><div class="ph__island"></div>
+                    <div class="appbar"><svg class="ico ico-m"><use href="#i-arrow-left"/></svg><span>Profile: <span class="nm">Ali</span></span></div>
+                    <div class="col" style="padding-top:1.1em;">
+                      <div class="m-field" style="border-color:#6F7977;"><svg class="ico"><use href="#i-user"/></svg>New name</div>
+                    </div>
+                  </div>
+                </div>
+                <p class="ph-cap"><b>ProfilePage</b></p>
+              </li>
+            </ul>
+          </li></ul>
+        </div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p><code>trim()</code> removes spaces at the start and end. <code>condition ? a : b</code> picks <code>a</code> if the condition is true, otherwise <code>b</code>.</p><p>The picture: one <code>ProfileProvider</code>, two screens. Both show the same name, because both read it from the same place.</p></aside>
+</section>
+
+<!-- 14 · MultiProvider -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Share data · Register them</p>
+      <h2 class="title"><code>MultiProvider</code>: several providers, one place</h2>
+    </header>
+    <div class="body" style="grid-template-columns: auto 1fr; gap: 2.4cqw; align-items:start;">
+      <div class="side">
+      <div class="term code">
+        <div class="term__bar"><i></i><i></i><i></i><span>lib/main.dart</span><span class="grow"></span><span>final version</span></div>
+<pre class="hl" data-groups="3-6,8:g1;7:g2">void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) =&gt; CounterProvider()),
+        ChangeNotifierProvider(create: (context) =&gt; ProfileProvider()),
+        ChangeNotifierProvider(create: (context) =&gt; ThemeProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
+}</pre>
+      </div>
+      <div class="callout callout--warn"><svg class="ico"><use href="#i-alert"/></svg><div>After changing <code>main()</code>, do a hot <b>restart</b></div></div>
+      </div>
+      <div class="explain">
+        <div class="legend-groups stagger">
+          <div class="lg" style="--c:#13B9FD;"><span class="n">1</span><b>A list of providers</b><span>instead of nesting them inside each other</span></div>
+          <div class="lg" style="--c:#FFC857;"><span class="n">2</span><b><code>ThemeProvider</code></b><span>this line is added on slide 17</span></div>
+        </div>
+        <div class="card" style="display:grid; justify-items:center; gap:.9cqw; padding:1.2cqw 1cqw;">
+          <div class="wt wt--sm">
+            <ul><li><span class="nd nd--prov">MultiProvider</span>
+              <ul><li><span class="nd">MyApp</span>
+                <ul><li><span class="nd">MaterialApp</span>
+                  <ul>
+                    <li><span class="nd nd--hl">HomePage</span></li>
+                    <li><span class="nd nd--hl">CounterPage</span></li>
+                    <li><span class="nd nd--hl">ProfilePage</span></li>
+                  </ul>
+                </li></ul>
+              </li></ul>
+            </li></ul>
+          </div>
+          <p class="ph-cap" style="margin-top:0; font-size:1.05cqw;">Every provider in the list is available to the <b>whole app</b></p>
+        </div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>This is the final <code>lib/main.dart</code>. Without <code>MultiProvider</code> we would nest <code>ChangeNotifierProvider</code> inside <code>ChangeNotifierProvider</code>; it works, but it is hard to read. After changing <code>main()</code>, do a hot restart.</p></aside>
+</section>
+
+<!-- 15 · Home page -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Share data · Home</p>
+      <h2 class="title">Home page: watch the name, <code>Consumer</code> for the counter</h2>
+    </header>
+    <div class="body" style="grid-template-columns: auto 1fr auto; gap: 2cqw; align-items:start;">
+      <div class="term code">
+        <div class="term__bar"><i></i><i></i><i></i><span>lib/home_page.dart</span><span class="grow"></span><span>HomePage · build()</span></div>
+<pre class="hl" data-groups="1:g1;4-6,8-12,14:g2;7,13:g3">final name = context.watch&lt;ProfileProvider&gt;().name;
+// AppBar: title: Text('Hello, $name'), plus the theme button
+// body: ListView(children: [
+Consumer&lt;CounterProvider&gt;(
+  builder: (context, counter, child) {
+    return ListTile(
+      leading: child,
+      title: const Text('Counter'),
+      subtitle: Text('Pressed ${counter.count} times'),
+      onTap: () { /* push CounterPage */ },
+    );
+  },
+  child: const Icon(Icons.exposure_plus_1), // built only once
+),</pre>
+      </div>
+      <div class="explain">
+        <div class="legend-groups stagger">
+          <div class="lg" style="--c:#13B9FD;"><span class="n">1</span><b>Profile</b><span>the name, with <code>context.watch</code></span></div>
+          <div class="lg" style="--c:#FFC857;"><span class="n">2</span><b>Counter</b><span>inside <code>Consumer</code>: only this tile rebuilds</span></div>
+          <div class="lg" style="--c:#4ADE80;"><span class="n">3</span><b><code>child</code></b><span>the icon is built once, reused as <code>leading: child</code></span></div>
+        </div>
+        <div class="callout callout--info"><svg class="ico"><use href="#i-user"/></svg><div>A second <code>ListTile</code> "Profile" shows the name and pushes <code>ProfilePage</code></div></div>
+      </div>
+      <div class="ph" style="--pw:12.5cqw;">
+        <div class="ph__scr" style="background:#F4FBF8; color:#161D1C; --ab:#F4FBF8; --abf:#161D1C; --ic:#3F4947;"><div class="ph__island"></div>
+          <div class="appbar"><span class="is-tag" data-tag="watch">Hello, Ali</span><span style="flex:1;"></span><svg class="ico ico-m"><use href="#i-moon"/></svg></div>
+          <div class="m-tile is-tag" data-tag="Consumer" style="margin-top:.6em;"><svg class="ico ico-m"><use href="#i-plus-one"/></svg><div><div class="t">Counter</div><div class="s">Pressed 3 times</div></div></div>
+          <div class="m-tile"><svg class="ico ico-m"><use href="#i-user"/></svg><div><div class="t">Profile</div><div class="s">Ali</div></div></div>
+        </div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>The Home page listens to two providers: Profile (name) and Counter (inside <code>Consumer</code>).</p><p>Point at <code>leading: child</code>: the icon is built once and reused every time the counter changes. That is the <code>child</code> optimisation from slide 8 in one line.</p></aside>
+</section>
+
+<!-- 16 · Profile page -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Share data · Profile</p>
+      <h2 class="title">Profile page: <code>read</code> to change</h2>
+    </header>
+    <div class="body" style="grid-template-columns: 1fr auto; gap: 2.4cqw; align-items:start;">
+      <div class="side">
+        <div class="term code">
+          <div class="term__bar"><i></i><i></i><i></i><span>lib/profile_page.dart</span><span class="grow"></span><span>ProfilePage · build()</span></div>
+<pre class="hl" data-groups="1,3:g1;11-13:g2">final name = context.watch&lt;ProfileProvider&gt;().name;
+// ...
+appBar: AppBar(title: Text('Profile: $name')),
+// ...
+TextField(
+  decoration: const InputDecoration(
+    labelText: 'New name',
+    prefixIcon: Icon(Icons.person),
+    border: OutlineInputBorder(),
+  ),
+  onChanged: (value) {
+    context.read&lt;ProfileProvider&gt;().changeName(value);
+  },
+),</pre>
+        </div>
+        <div class="stats stagger">
+          <div class="callout callout--info"><svg class="ico"><use href="#i-pencil"/></svg><div>Type a name: the Profile AppBar updates with <b>every letter</b></div></div>
+          <div class="callout callout--ok"><svg class="ico"><use href="#i-arrow-left"/></svg><div>Go back: Home says "Hello, ..." with the <b>new name</b></div></div>
+        </div>
+      </div>
+      <div class="phones" style="gap:1.2cqw; align-items:center;">
+        <div class="ph-col">
+          <span class="badge">1 · Type</span>
+          <div class="ph" style="--pw:11.5cqw;">
+            <div class="ph__scr" style="background:#F4FBF8; color:#161D1C; --ab:#F4FBF8; --abf:#161D1C; --ic:#3F4947;"><div class="ph__island"></div>
+              <div class="appbar"><svg class="ico ico-m"><use href="#i-arrow-left"/></svg><span>Profile: <span class="nm">Monther</span></span></div>
+              <div class="col" style="padding-top:1.3em;">
+                <div class="m-field is-focus" style="border-color:#006A60;"><span class="lbl" style="background:#F4FBF8; color:#006A60;">New name</span><svg class="ico"><use href="#i-user"/></svg><span style="color:#161D1C;">Monther</span><span style="display:inline-block; width:.09em; height:1.1em; margin-left:-.5em; background:#006A60;"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="arrow-mid" style="font-size:2cqw; padding-top:2cqw;"><svg class="ico"><use href="#i-arrow-right"/></svg></div>
+        <div class="ph-col">
+          <span class="badge badge--ok">2 · Back on Home</span>
+          <div class="ph" style="--pw:11.5cqw;">
+            <div class="ph__scr" style="background:#F4FBF8; color:#161D1C; --ab:#F4FBF8; --abf:#161D1C; --ic:#3F4947;"><div class="ph__island"></div>
+              <div class="appbar"><span>Hello, <span class="nm">Monther</span></span><span style="flex:1;"></span><svg class="ico ico-m"><use href="#i-moon"/></svg></div>
+              <div class="m-tile"><svg class="ico ico-m"><use href="#i-plus-one"/></svg><div><div class="t">Counter</div><div class="s">Pressed 3 times</div></div></div>
+              <div class="m-tile"><svg class="ico ico-m"><use href="#i-user"/></svg><div><div class="t">Profile</div><div class="s"><span class="nm">Monther</span></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Live demo: type "Monther", then try an Arabic name like "محمد", then delete everything to see "Guest". The <code>AppTextField</code> from Lecture 08 has no <code>onChanged</code> yet, so we use a plain <code>TextField</code> here.</p></aside>
+</section>
+
+<!-- 17 · ThemeProvider -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Optional · Dark mode</p>
+      <h2 class="title">Optional: <code>ThemeProvider</code> for dark mode</h2>
+    </header>
+    <div class="body" style="grid-template-columns: 1fr auto; gap: 2.4cqw; align-items:start;">
+      <div class="side">
+        <div class="term code">
+          <div class="term__bar"><i></i><i></i><i></i><span>lib/theme_provider.dart</span></div>
+<pre class="hl" data-groups="6-9:g1">class ThemeProvider extends ChangeNotifier {
+  ThemeMode _themeMode = ThemeMode.system; // follow the phone at first
+
+  ThemeMode get themeMode =&gt; _themeMode;
+
+  void changeTheme(bool isDark) {
+    _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
+    notifyListeners();
+  }
+}</pre>
+        </div>
+        <div class="defs stagger">
+          <div class="def"><code>changeTheme()</code><span>the same method as <code>_MyAppState</code> in Lecture 10, now in a provider</span></div>
+          <div class="def"><code>MyApp</code><span><code>theme: buildTheme(Brightness.light)</code>, <code>darkTheme: buildTheme(Brightness.dark)</code>, <code>themeMode: themeMode</code> (from <code>context.watch&lt;ThemeProvider&gt;()</code>)</span></div>
+          <div class="def"><code>ThemeButton</code><span>Lecture 10's button, no callback: <code>isDark</code> comes from <code>Theme.of(context).brightness</code>, and <code>onPressed</code> calls <code>context.read&lt;ThemeProvider&gt;().changeTheme(!isDark)</code></span></div>
+          <div class="def"><code>Home AppBar</code><span><code>actions: const [ThemeButton()]</code></span></div>
+        </div>
+      </div>
+      <div class="ph" style="--pw:12.5cqw;">
+        <div class="ph__scr" style="background:#0E1513; color:#DDE4E1; --ab:#0E1513; --abf:#DDE4E1; --ic:#BEC9C6;"><div class="ph__island"></div>
+          <div class="appbar"><span>Hello, Ali</span><span style="flex:1;"></span><span class="is-tag is-tag--below" data-tag="ThemeButton" style="display:grid;"><svg class="ico ico-m"><use href="#i-sun"/></svg></span></div>
+          <div class="m-tile" style="margin-top:.6em;"><svg class="ico ico-m"><use href="#i-plus-one"/></svg><div><div class="t">Counter</div><div class="s">Pressed 3 times</div></div></div>
+          <div class="m-tile"><svg class="ico ico-m"><use href="#i-user"/></svg><div><div class="t">Profile</div><div class="s">Ali</div></div></div>
+        </div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>In Lecture 10, <code>MyApp</code> used <code>setState</code> and we passed <code>onThemeChanged</code> down through <code>LoginPage</code> and <code>HomePage</code> to the <code>ThemeButton</code>. Now the theme lives in a provider, so the button works on any screen with nothing passed down.</p><p>We start at <code>ThemeMode.system</code>, like Lecture 10; the button reads the brightness that is really on screen, so even when the phone is dark and we are still in system mode, it shows the sun and the first tap switches to light. <code>lib/theme/app_theme.dart</code> is copied unchanged from Lecture 10. Skip this slide if time is short.</p></aside>
+</section>
+
+<!-- 18 · Common mistakes -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Watch out</p>
+      <h2 class="title">Common beginner mistakes and best practices</h2>
+    </header>
+    <div class="body probs">
+      <table class="tbl tbl--probs">
+        <thead><tr><th><svg class="ico"><use href="#i-alert"/></svg>The mistake or error</th><th><svg class="ico"><use href="#i-check-circle"/></svg>The fix</th></tr></thead>
+        <tbody>
+          <tr><td><span class="err">Could not find the correct Provider&lt;CounterProvider&gt; above this CounterPage Widget</span></td><td>Put the provider <b>above</b> <code>MaterialApp</code> in <code>main()</code>, then hot <b>restart</b></td></tr>
+          <tr><td><code>context.watch</code> inside <code>onPressed</code> → <span class="err">Tried to listen to a value exposed with provider, from outside of the widget tree.</span></td><td>Use <code>context.read</code> there</td></tr>
+          <tr><td><span class="muted">Forgot</span> <code>notifyListeners()</code></td><td>No error, but the screen never changes: call it after every change</td></tr>
+          <tr><td><span class="muted">Created the notifier inside</span> <code>build()</code></td><td>It resets on every rebuild; create it <b>once</b> in <code>create:</code></td></tr>
+          <tr><td><span class="muted">UI code in the provider (widgets, <code>BuildContext</code>, <code>Navigator</code>, <code>SnackBar</code>)</span></td><td>Providers hold only <b>data and rules</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Show the first two live (Practical example 5). The first error message even tells you: "You added a new provider in your <code>main.dart</code> and performed a hot-reload. To fix, perform a hot-restart."</p><p>Practical example 5: remove <code>ProfileProvider</code> from the list, hot restart, read the red screen together. Put the line back and press hot <b>reload</b> only: the error stays, because <code>main()</code> does not run again. Then hot <b>restart</b>.</p></aside>
+</section>
+
+<!-- 19 · Summary -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Wrap-up</p>
+      <h2 class="title">Summary</h2>
+    </header>
+    <div class="body wrap">
+      <article class="card card--hl">
+        <h3>Today you learned</h3>
+        <ul class="checklist stagger">
+          <li><span><code>ChangeNotifier</code>: private data + getters + methods that call <code>notifyListeners()</code></span></li>
+          <li><span><code>ChangeNotifierProvider</code> / <code>MultiProvider</code> above <code>MaterialApp</code></span></li>
+          <li><span>Watch to show (<code>context.watch</code>, <code>Consumer</code>), read to change (<code>context.read</code>)</span></li>
+          <li><span><code>Provider.of(context)</code> = watch; <code>Provider.of(context, listen: false)</code> = read</span></li>
+          <li><span>A change on one screen refreshes every screen that watches</span></li>
+        </ul>
+        <p class="small" style="margin-top:1.6cqw;"><b>Next:</b> Lecture 17 uses the same tools to build a full shop app.</p>
+      </article>
+      <div class="side">
+        <article class="card">
+          <h3>Ask yourself</h3>
+          <ol class="steps" style="margin-top:1cqw; font-size:1.4cqw;">
+            <li><span>Where does the name live now?</span></li>
+            <li><span>Who can change it?</span></li>
+            <li><span>Who rebuilds?</span></li>
+          </ol>
+        </article>
+        <div class="qa__big grad-text" style="font-size:4.6cqw; margin-top:1cqw;">Questions?</div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Ask: "Where does the name live now? Who can change it? Who rebuilds?" If students can answer those three, they understood state management.</p></aside>
+</section>
+
+<!-- 20 · Homework -->
+<section class="slide">
+  <div class="canvas"><div class="frame">
+    <header class="head">
+      <p class="kicker">Practice at home</p>
+      <h2 class="title">Homework</h2>
+    </header>
+    <div class="body" style="grid-template-columns: 1.35fr .65fr; gap: 2.6cqw; align-items:start;">
+      <ol class="steps bigsteps stagger" style="gap:1.15cqw;">
+        <li><span>Add a <b>"−" button</b> that never goes below 0 <span class="badge badge--ok">easy</span><br><small class="muted" style="font-size:1.1cqw;"><code>decrement()</code> in <code>CounterProvider</code>: the rule lives in the provider</small></span></li>
+        <li><span>Show the <b>count in the AppBar title</b> with a <code>Consumer</code> <span class="badge badge--ok">easy</span><br><small class="muted" style="font-size:1.1cqw;">"Counter: 3": the title and the big number always match</small></span></li>
+        <li><span>Add a <b>city</b> to the profile (default "Tripoli") <span class="badge badge--warm">medium</span><br><small class="muted" style="font-size:1.1cqw;">Home shows "Ali · Tripoli"; typing a new city on Profile updates it</small></span></li>
+        <li><span>Move the Lecture 15 <b>Mini Shop</b> to a <code>CartProvider</code> <span class="badge badge--warm">medium</span><br><small class="muted" style="font-size:1.1cqw;"><code>count</code>, <code>add()</code>, <code>clear()</code>; badges and cart stay in sync, no global variable</small></span></li>
+        <li><span>Switch the <b>greeting</b> between English and Arabic <span class="badge badge--warm">medium</span><br><small class="muted" style="font-size:1.1cqw;">a <code>greeting</code> getter in <code>ProfileProvider</code>; no <code>if</code> about language inside a widget</small></span></li>
+      </ol>
+      <div class="side">
+        <article class="card card--hl" style="display:grid; gap:.8cqw;">
+          <span class="badge badge--warm" style="justify-self:start;">Bonus</span>
+          <h3><code>context.select</code></h3>
+          <p style="font-size:1.2cqw;">Read about it in the provider README (pub.dev/packages/provider) and make <code>HomePage</code> rebuild only when the <b>name</b> changes, not the counter.</p>
+        </article>
+        <div class="callout callout--info"><svg class="ico"><use href="#i-cart"/></svg><div>Exercise 4 is the warm-up for <b>Lecture 17</b>: a full shop app with Provider.</div></div>
+      </div>
+    </div>
+    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+  </div></div>
+  <aside class="notes"><p>Exercise 4 is the warm-up for Lecture 17, where we build a full shop app with Provider.</p><p>Full details (and the "done =" checks) are in the Homework section of the lecture plan.</p></aside>
+</section>
+
+</main>
+
+<div class="notes-panel" hidden>
+  <h4 class="np-title">Speaker notes</h4>
+  <div class="np-body"></div>
+</div>
+<div class="hint" aria-hidden="true"><kbd>←</kbd> <kbd>→</kbd> navigate · <kbd>F</kbd> fullscreen · <kbd>N</kbd> notes · <kbd>T</kbd> theme</div>
+
+<script src="js/deck.js"></script>
+</body>
+</html>
