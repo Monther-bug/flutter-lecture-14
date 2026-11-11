@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Lecture 16 · State Management 2: Provider</title>
-  <meta name="description" content="Mobile App Development with Flutter, Lecture 16: Share state across screens with the provider package: write a ChangeNotifier, provide it above MaterialApp, read it with Consumer and context.watch, and change it with context.read.">
+  <title>Lecture 14 · State Management 2: Provider</title>
+  <meta name="description" content="Mobile App Development with Flutter, Lecture 14: Share state across screens with the provider package: write a ChangeNotifier, provide it above MaterialApp, read it with Consumer and context.watch, and change it with context.read.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Sora:wght@600;700&amp;display=swap" rel="stylesheet">
@@ -89,7 +89,7 @@
 <section class="slide">
   <div class="canvas"><div class="frame frame--title">
     <div class="stagger">
-      <p class="kicker">Lecture 16 · Mobile App Development</p>
+      <p class="kicker">Lecture 14 · Mobile App Development</p>
       <h1 class="hero">State Management 2:<br><span class="grad-text">Provider</span></h1>
       <p class="lead lead--hero">One place for your data, the Flutter way.</p>
       <div class="chips">
@@ -137,7 +137,7 @@
       </div>
     </div>
   </div></div>
-  <aside class="notes"><p>Remind students of the Lecture 15 cliffhanger: <code>ValueNotifier</code> worked for one number, but real apps need classes with many values and rules. That is what Provider gives us.</p><p>The picture: three screens of today's demo app (Home, Counter, Profile), all reading their data from one place, the providers.</p></aside>
+  <aside class="notes"><p>Remind students of the Lecture 13 cliffhanger: <code>ValueNotifier</code> worked for one number, but real apps need classes with many values and rules. That is what Provider gives us.</p><p>The picture: three screens of today's demo app (Home, Counter, Profile), all reading their data from one place, the providers.</p></aside>
 </section>
 
 <!-- 02 · Learning objectives -->
@@ -146,7 +146,7 @@
     <header class="head">
       <p class="kicker">Today</p>
       <h2 class="title">Learning objectives</h2>
-      <p class="lead">We take the Lecture 15 idea (one place for the data) and build it the Flutter way, with the <b>provider</b> package.</p>
+      <p class="lead">We take the Lecture 13 idea (one place for the data) and build it the Flutter way, with the <b>provider</b> package.</p>
     </header>
     <div class="body" style="grid-template-rows: 1fr auto;">
       <div class="journey stagger">
@@ -158,21 +158,21 @@
       </div>
       <div class="callout callout--ok goal"><svg class="ico"><use href="#i-target"/></svg><div><b>Goal:</b> one app with three small providers (a <b>counter</b>, a <b>profile name</b> and a <b>theme</b>) shared by every screen.</div></div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
-  <aside class="notes"><p>Today we write three small providers: a counter, a profile name and a theme. The next lecture uses the same tools to build a full shop app.</p></aside>
+  <aside class="notes"><p>Today we write three small providers: a counter, a profile name and a theme. Lecture 21 uses the same tools to build a full shop app.</p></aside>
 </section>
 
-<!-- 03 · From Lecture 15 to Provider -->
+<!-- 03 · From Lecture 13 to Provider -->
 <section class="slide">
   <div class="canvas"><div class="frame">
     <header class="head">
       <p class="kicker">Why Provider</p>
-      <h2 class="title">From Lecture 15 to Provider: what and why</h2>
+      <h2 class="title">From Lecture 13 to Provider: what and why</h2>
     </header>
     <div class="body" style="grid-template-columns: 1.1fr .9fr; gap: 3cqw; align-items:start;">
       <div class="side stagger">
-        <div class="callout callout--info"><svg class="ico"><use href="#i-activity"/></svg><div><b>Lecture 15 idea:</b> one place for the data, widgets listen, only listeners rebuild</div></div>
+        <div class="callout callout--info"><svg class="ico"><use href="#i-activity"/></svg><div><b>Lecture 13 idea:</b> one place for the data, widgets listen, only listeners rebuild</div></div>
         <article class="card card--hl" style="display:grid; grid-template-columns:auto 1fr; gap:1.3cqw; align-items:center;">
           <span class="itile"><svg class="ico"><use href="#i-package"/></svg></span>
           <h3 style="font-size:1.8cqw; line-height:1.35;"><b>Provider</b> = a package that does exactly this, in a simple way</h3>
@@ -184,7 +184,7 @@
       </div>
       <div class="side">
         <article class="card" style="display:grid; gap:.7cqw;">
-          <span class="badge" style="justify-self:start;">Lecture 15</span>
+          <span class="badge" style="justify-self:start;">Lecture 13</span>
           <h3><code>ValueNotifier</code></h3>
           <p>holds <b>one</b> value</p>
           <div class="example-list"><span class="chip"><code>value</code></span></div>
@@ -198,7 +198,7 @@
         </article>
       </div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p>The Flutter docs (docs.flutter.dev/data-and-backend/state-mgmt/simple) say that if you are new to Flutter and have no strong reason to pick another approach, provider is probably the one to start with. You do not need to know <code>InheritedWidget</code>; Provider hides it for you.</p></aside>
 </section>
@@ -235,7 +235,7 @@
       </div>
       <div class="callout callout--info" style="width:70cqw; margin-top:2cqw;"><svg class="ico"><use href="#i-bulb"/></svg><div>Every code slide today is one of these three boxes.</div></div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p>Keep this picture visible (or redraw it on the board) for the whole lecture. Every code slide is one of these three boxes.</p></aside>
 </section>
@@ -271,7 +271,7 @@ dependencies:
         <div class="callout callout--warn"><svg class="ico"><use href="#i-alert"/></svg><div>After adding a package: <b>stop and run again</b> (or hot restart)</div></div>
       </div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p>Run the command live in the VS Code terminal and show the new line in <code>pubspec.yaml</code>. If students see "Target of URI doesn't exist: 'package:provider/provider.dart'", they skipped the command or ran it in the wrong folder.</p><p>No Android or iOS files change.</p></aside>
 </section>
@@ -311,7 +311,7 @@ class CounterProvider extends ChangeNotifier {
         <div class="callout callout--info"><svg class="ico"><use href="#i-info"/></svg><div>No widgets here: it imports <code>foundation.dart</code>, not <code>material.dart</code>. Plain Dart logic.</div></div>
       </div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p>No widgets in this file: it imports <code>foundation.dart</code>, not <code>material.dart</code>. This is plain Dart logic. Rule: change the data, then call <code>notifyListeners()</code>.</p><p>The full file also has <code>reset()</code>: <code>_count = 0;</code> then <code>notifyListeners();</code>.</p></aside>
 </section>
@@ -361,9 +361,9 @@ class CounterProvider extends ChangeNotifier {
         <div class="callout callout--warn"><svg class="ico"><use href="#i-alert"/></svg><div>A widget can only find providers that are <b>above</b> it</div></div>
       </div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
-  <aside class="notes"><p>Draw the tree: <code>ChangeNotifierProvider</code> → <code>MyApp</code> → <code>MaterialApp</code> → every page you push. Because pushed pages live inside <code>MaterialApp</code>, they all see the provider. This is what fixes the "stale cart page" from Lecture 15.</p></aside>
+  <aside class="notes"><p>Draw the tree: <code>ChangeNotifierProvider</code> → <code>MyApp</code> → <code>MaterialApp</code> → every page you push. Because pushed pages live inside <code>MaterialApp</code>, they all see the provider. This is what fixes the "stale cart page" from Lecture 13.</p></aside>
 </section>
 
 <!-- 08 · Reading with Consumer -->
@@ -429,7 +429,7 @@ class CounterProvider extends ChangeNotifier {
         <div class="callout callout--info"><svg class="ico"><use href="#i-bulb"/></svg><div><b><code>child:</code> optimisation:</b> a widget you pass as <code>child</code> is built once and handed back to <code>builder</code>, for parts that never change</div></div>
       </div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p>This is the "Consumer" version of the counter page (complete example, variants). We will use the <code>child</code> trick on the Home page (slide 15).</p><p>In the picture, blue boxes rebuild. Listening in <code>build()</code> (slides 9 and 10) rebuilds the whole page; <code>Consumer</code> rebuilds only what its <code>builder</code> returns.</p></aside>
 </section>
@@ -468,7 +468,7 @@ onPressed: () {
         </div>
       </div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p>This is the older, longer style. You will see it in many tutorials and Stack Overflow answers, so students must recognise it. Next slide: the short form we use in this course.</p></aside>
 </section>
@@ -496,7 +496,7 @@ onPressed: () {
       <div class="callout callout--ok" style="font-size:1.7cqw; padding:1.3cqw 1.7cqw; align-items:center;"><svg class="ico" style="font-size:2.2cqw;"><use href="#i-check-circle"/></svg><div>Easy rule: <b>watch</b> to show, <b>read</b> to change</div></div>
       <div class="callout callout--info"><svg class="ico"><use href="#i-info"/></svg><div><code>watch</code> and <code>read</code> come from the same import: <code>package:provider/provider.dart</code></div></div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p><code>watch</code> and <code>read</code> come from the same import, <code>package:provider/provider.dart</code>. Write the rule on the board; we repeat it all lecture.</p></aside>
 </section>
@@ -513,7 +513,7 @@ onPressed: () {
         <thead><tr>
           <th style="width:38%;"><svg class="ico"><use href="#i-file"/></svg>Lecture 09 (<code>setState</code>)</th>
           <th class="arr"></th>
-          <th><svg class="ico"><use href="#i-package"/></svg>Lecture 16 (Provider)</th>
+          <th><svg class="ico"><use href="#i-package"/></svg>Lecture 14 (Provider)</th>
         </tr></thead>
         <tbody>
           <tr><td><code>StatefulWidget</code> + <code>State</code> class</td><td class="arr"><svg class="ico"><use href="#i-arrow-right"/></svg></td><td><code>StatelessWidget</code></td></tr>
@@ -525,7 +525,7 @@ onPressed: () {
       </table>
       <div class="callout callout--ok"><svg class="ico"><use href="#i-check-circle"/></svg><div>Nothing is lost: the data and the logic just move <b>out of the page</b> into their own class.</div></div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p>Open the Lecture 09 counter side by side with the new files. Nothing is lost; the data and the logic just move out of the page into their own class.</p></aside>
 </section>
@@ -569,7 +569,7 @@ return Scaffold(
         </div>
       </div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p>Live demo with <code>lib/main.dart</code> (step 1 version). Tap + a few times, then hot reload: the count stays, because it lives in the provider. Then show the watch/read experiment from Practical example 2.</p><p>The experiment: (1) in <code>build()</code> change <code>context.watch</code> to <code>context.read</code>, hot reload, tap +: the number does not change on screen (the data changes, but nobody listens). (2) Put it back; in the FAB's <code>onPressed</code> change <code>context.read</code> to <code>context.watch</code>, hot reload, tap +: the Debug Console shows "Tried to listen to a value exposed with provider, from outside of the widget tree." (3) Put it back.</p></aside>
 </section>
@@ -633,7 +633,7 @@ return Scaffold(
         </div>
       </div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p><code>trim()</code> removes spaces at the start and end. <code>condition ? a : b</code> picks <code>a</code> if the condition is true, otherwise <code>b</code>.</p><p>The picture: one <code>ProfileProvider</code>, two screens. Both show the same name, because both read it from the same place.</p></aside>
 </section>
@@ -687,7 +687,7 @@ return Scaffold(
         </div>
       </div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p>This is the final <code>lib/main.dart</code>. Without <code>MultiProvider</code> we would nest <code>ChangeNotifierProvider</code> inside <code>ChangeNotifierProvider</code>; it works, but it is hard to read. After changing <code>main()</code>, do a hot restart.</p></aside>
 </section>
@@ -733,7 +733,7 @@ Consumer&lt;CounterProvider&gt;(
         </div>
       </div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p>The Home page listens to two providers: Profile (name) and Counter (inside <code>Consumer</code>).</p><p>Point at <code>leading: child</code>: the icon is built once and reused every time the counter changes. That is the <code>child</code> optimisation from slide 8 in one line.</p></aside>
 </section>
@@ -794,7 +794,7 @@ TextField(
         </div>
       </div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p>Live demo: type "Monther", then try an Arabic name like "محمد", then delete everything to see "Guest". The <code>AppTextField</code> from Lecture 08 has no <code>onChanged</code> yet, so we use a plain <code>TextField</code> here.</p></aside>
 </section>
@@ -836,7 +836,7 @@ TextField(
         </div>
       </div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p>In Lecture 10, <code>MyApp</code> used <code>setState</code> and we passed <code>onThemeChanged</code> down through <code>LoginPage</code> and <code>HomePage</code> to the <code>ThemeButton</code>. Now the theme lives in a provider, so the button works on any screen with nothing passed down.</p><p>We start at <code>ThemeMode.system</code>, like Lecture 10; the button reads the brightness that is really on screen, so even when the phone is dark and we are still in system mode, it shows the sun and the first tap switches to light. <code>lib/theme/app_theme.dart</code> is copied unchanged from Lecture 10. Skip this slide if time is short.</p></aside>
 </section>
@@ -860,7 +860,7 @@ TextField(
         </tbody>
       </table>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p>Show the first two live (Practical example 5). The first error message even tells you: "You added a new provider in your <code>main.dart</code> and performed a hot-reload. To fix, perform a hot-restart."</p><p>Practical example 5: remove <code>ProfileProvider</code> from the list, hot restart, read the red screen together. Put the line back and press hot <b>reload</b> only: the error stays, because <code>main()</code> does not run again. Then hot <b>restart</b>.</p></aside>
 </section>
@@ -882,7 +882,7 @@ TextField(
           <li><span><code>Provider.of(context)</code> = watch; <code>Provider.of(context, listen: false)</code> = read</span></li>
           <li><span>A change on one screen refreshes every screen that watches</span></li>
         </ul>
-        <p class="small" style="margin-top:1.6cqw;"><b>Next:</b> Lecture 17 uses the same tools to build a full shop app.</p>
+        <p class="small" style="margin-top:1.6cqw;"><b>Later:</b> Lecture 21 uses the same tools to build a full shop app.</p>
       </article>
       <div class="side">
         <article class="card">
@@ -896,7 +896,7 @@ TextField(
         <div class="qa__big grad-text" style="font-size:4.6cqw; margin-top:1cqw;">Questions?</div>
       </div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
   <aside class="notes"><p>Ask: "Where does the name live now? Who can change it? Who rebuilds?" If students can answer those three, they understood state management.</p></aside>
 </section>
@@ -913,7 +913,7 @@ TextField(
         <li><span>Add a <b>"−" button</b> that never goes below 0 <span class="badge badge--ok">easy</span><br><small class="muted" style="font-size:1.1cqw;"><code>decrement()</code> in <code>CounterProvider</code>: the rule lives in the provider</small></span></li>
         <li><span>Show the <b>count in the AppBar title</b> with a <code>Consumer</code> <span class="badge badge--ok">easy</span><br><small class="muted" style="font-size:1.1cqw;">"Counter: 3": the title and the big number always match</small></span></li>
         <li><span>Add a <b>city</b> to the profile (default "Tripoli") <span class="badge badge--warm">medium</span><br><small class="muted" style="font-size:1.1cqw;">Home shows "Ali · Tripoli"; typing a new city on Profile updates it</small></span></li>
-        <li><span>Move the Lecture 15 <b>Mini Shop</b> to a <code>CartProvider</code> <span class="badge badge--warm">medium</span><br><small class="muted" style="font-size:1.1cqw;"><code>count</code>, <code>add()</code>, <code>clear()</code>; badges and cart stay in sync, no global variable</small></span></li>
+        <li><span>Move the Lecture 13 <b>Mini Shop</b> to a <code>CartProvider</code> <span class="badge badge--warm">medium</span><br><small class="muted" style="font-size:1.1cqw;"><code>count</code>, <code>add()</code>, <code>clear()</code>; badges and cart stay in sync, no global variable</small></span></li>
         <li><span>Switch the <b>greeting</b> between English and Arabic <span class="badge badge--warm">medium</span><br><small class="muted" style="font-size:1.1cqw;">a <code>greeting</code> getter in <code>ProfileProvider</code>; no <code>if</code> about language inside a widget</small></span></li>
       </ol>
       <div class="side">
@@ -922,12 +922,12 @@ TextField(
           <h3><code>context.select</code></h3>
           <p style="font-size:1.2cqw;">Read about it in the provider README (pub.dev/packages/provider) and make <code>HomePage</code> rebuild only when the <b>name</b> changes, not the counter.</p>
         </article>
-        <div class="callout callout--info"><svg class="ico"><use href="#i-cart"/></svg><div>Exercise 4 is the warm-up for <b>Lecture 17</b>: a full shop app with Provider.</div></div>
+        <div class="callout callout--info"><svg class="ico"><use href="#i-cart"/></svg><div>Exercise 4 is the warm-up for <b>Lecture 21</b>: a full shop app with Provider.</div></div>
       </div>
     </div>
-    <footer class="foot"><span>Mobile App Development · Lecture 16</span><span class="num"></span></footer>
+    <footer class="foot"><span>Mobile App Development · Lecture 14</span><span class="num"></span></footer>
   </div></div>
-  <aside class="notes"><p>Exercise 4 is the warm-up for Lecture 17, where we build a full shop app with Provider.</p><p>Full details (and the "done =" checks) are in the Homework section of the lecture plan.</p></aside>
+  <aside class="notes"><p>Exercise 4 is the warm-up for Lecture 21, where we build a full shop app with Provider.</p><p>Full details (and the "done =" checks) are in the Homework section of the lecture plan.</p></aside>
 </section>
 
 </main>
